@@ -513,12 +513,37 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		return this.applicationListeners;
 	}
 
+	/**
+	 * 该方法是spring容器初始化得核心方法。是spring容器初始化的核心流程，是一个典型的父类模板涉及模式的运用
+	 * 根据不同的上下文对象，会调用不同的上下文对象子类方法中
+	 * 核心上下问子类有：
+	 * ClassPathXmlApplicationContext
+	 * FileSystemXmlApplicationContext
+	 * AnnotationConfigApplicationContext
+	 * EmbeddedWebApplicationContext(spring boot)
+	 * */
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
+			/**
+			 * 容器初始化做准备
+			 * */
 			// Prepare this context for refreshing.
 			prepareRefresh();
-
+			/**
+			 * 重要方法
+			 * 1.创建BeanFactory对象
+			 * 2.xml解析
+			 * 传统标签解析：bean、import等
+			 * 自定义标签解析 如：<><context:component-scan base-package="com.test"/>
+			 * 自定义标签解析流程：
+			 * a.根据当前解析标签的头信息找到对应的namespaceUri
+			 * b.加载spring所有jar中的spring,handlers文件。并建立映射关系
+			 * c.根据namespaceUri从映射关系中找到对应的实现NamespaceHandle接口的类
+			 * d.调用init方法，init方法是注册了各种自定义标签解析类
+			 * e.根据namespaceUri找到对应的解析类，然后调用paser方法完成标签解析
+			 * 3.将解析出来的xml标签封装成BeanDefinition对象
+			 * */
 			// Tell the subclass to refresh the internal bean factory.
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
@@ -635,6 +660,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see #getBeanFactory()
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+		/**核心方法，使用了模板设计模式（子类实现父类的抽象方法，这个方法也叫钩子方法）*/
 		refreshBeanFactory();
 		return getBeanFactory();
 	}
