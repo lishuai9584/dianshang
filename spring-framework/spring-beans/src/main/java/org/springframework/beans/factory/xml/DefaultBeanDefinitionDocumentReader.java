@@ -311,8 +311,10 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		//解析document，封装成BeanDefinition   重点方法
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
 		if (bdHolder != null) {
+			//方法功能不重要，设计模式重点看下，装饰者设计模式，加上SPI思想
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
 			try {
+				//将封装后BeanDefinition进行缓存注册
 				// Register the final decorated instance.
 				BeanDefinitionReaderUtils.registerBeanDefinition(bdHolder, getReaderContext().getRegistry());
 			}

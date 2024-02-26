@@ -938,7 +938,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 						"Validation of bean definition failed", ex);
 			}
 		}
-
+		//先判断 BeanDefinition是否已经注册
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
 		if (existingDefinition != null) {
 			if (!isAllowBeanDefinitionOverriding()) {
@@ -981,8 +981,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 			else {
+				//把beanDefinition放入到缓存map中
 				// Still in startup registration phase
 				this.beanDefinitionMap.put(beanName, beanDefinition);
+				//把beanName放到beanDefinitionNames的list中，这个list着重记住，bean实例化的时候需要用
 				this.beanDefinitionNames.add(beanName);
 				removeManualSingletonName(beanName);
 			}
